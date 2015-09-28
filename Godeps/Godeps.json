@@ -1,0 +1,32 @@
+{
+	"ImportPath": "github.com/kildevaeld/cli",
+	"GoVersion": "go1.5.1",
+	"Deps": [
+		{
+			"ImportPath": "github.com/buger/goterm",
+			"Rev": "db9aaed44abbb1be9061aa43612ede2e864c5973"
+		},
+		{
+			"ImportPath": "github.com/mitchellh/mapstructure",
+			"Rev": "281073eb9eb092240d33ef253c404f1cca550309"
+		},
+		{
+			"ImportPath": "github.com/pkg/term",
+			"Rev": "fed4d9ece00ede8d657a7c46ec968bd35f307b77"
+		},
+		{
+			"ImportPath": "github.com/tj/go-spin",
+			"Comment": "1.0.0-9-g4bd47d3",
+			"Rev": "4bd47d3603b5c0460028794fbbf207f881088c08"
+		},
+		{
+			"ImportPath": "github.com/ttacon/chalk",
+			"Comment": "v0.1-2-ge66ca4d",
+			"Rev": "e66ca4d608eb6dc36d012bceeb08ef9f379134c1"
+		},
+		{
+			"ImportPath": "golang.org/x/crypto/ssh/terminal",
+			"Rev": "81bf7719a6b7ce9b665598222362b50122dfc13b"
+		}
+	]
+}
