@@ -1,5 +1,5 @@
 // From chalk
-package cli
+package prompt
 
 import "fmt"
 

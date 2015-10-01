@@ -1,15 +1,12 @@
-package cli
+package prompt
 
 import (
-	"fmt"
 	"os"
 	"syscall"
-	"time"
 
 	"golang.org/x/crypto/ssh/terminal"
 
 	"github.com/pkg/term"
-	"github.com/ttacon/chalk"
 )
 
 const (
@@ -98,7 +95,7 @@ func GetSize() (int, int, error) {
 	return w, h, nil
 }
 
-func MoveCursor(x, y int) {
+/*func MoveCursor(x, y int) {
 	os.Stdout.Write([]byte(fmt.Sprintf("\033[%d;%dH", x, y)))
 }
 
@@ -116,7 +113,7 @@ func moveForward(i int) {
 
 func moveBack(i int) {
 	os.Stdout.Write([]byte(fmt.Sprintf("\033[%dD", i)))
-}
+}*/
 
 func Save() {
 	os.Stdout.Write([]byte("\033[?1049h\033[H"))
@@ -130,25 +127,6 @@ func Clear() {
 	os.Stdout.Write([]byte("\033[2J"))
 }
 
-func Confirm(msg string) bool {
-	var ans string
-	fmt.Printf(fmt.Sprintf("%s%s%s [yn]? %s", ClearLine, Gray, msg, chalk.Reset))
-
-	a, k, _ := getChar()
-	fmt.Printf("%s %s", string(a), string(k))
-	ans = string(a)
-	if ans == "y" || ans == "Y" {
-		return true
-	} else if ans == "n" || ans == "n" {
-		fmt.Print("\n")
-		return false
-	} else {
-		fmt.Printf("\r%s%s %splease enter %s(es) or n(o)", Gray, msg, chalk.Cyan.NewStyle(), chalk.Bold.TextStyle("y"))
-		time.Sleep(1 * time.Second)
-		return Confirm(msg)
-	}
-}
-
 func handleSignals(c int) {
 	pid := syscall.Getpid()
 	switch c {
@@ -156,40 +134,5 @@ func handleSignals(c int) {
 		syscall.Kill(pid, syscall.SIGINT)
 	case keyCtrlZ:
 		syscall.Kill(pid, syscall.SIGTSTP)
-	}
-}
-
-func Password(msg string) string {
-	writer := os.Stdout
-	writer.Write([]byte(msg + " "))
-	x := 0
-	buffer := ""
-	for {
-		a, _, _ := getChar()
-		handleSignals(a)
-		if a == keyCtrlC {
-			syscall.Kill(syscall.Getpid(), syscall.SIGINT)
-			return ""
-		} else if a == Backspace {
-			if x == 0 {
-				continue
-			}
-
-			writer.Write([]byte("\b \b"))
-
-			x--
-			buffer = buffer[0:x]
-			continue
-		} else if a == keyEnter {
-			moveDown(1)
-			writer.Write([]byte("\r"))
-			return buffer
-		}
-
-		buffer += string(a)
-
-		writer.Write([]byte("*"))
-		//moveForward(0)
-		x++
 	}
 }

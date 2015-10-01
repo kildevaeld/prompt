@@ -1,4 +1,4 @@
-package cli
+package prompt
 
 type PasswordView struct {
 	theme *Theme

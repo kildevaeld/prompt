@@ -1,4 +1,4 @@
-package cli
+package prompt
 
 import "io"
 
@@ -27,6 +27,18 @@ func (c *CliUI) Confirm(msg string) bool {
 	confirm.Render()
 
 	return confirm.Value
+}
+
+func (c *CliUI) List(msg string, choices []string) string {
+	list := ListView{
+		Label:   msg,
+		theme:   c.Theme,
+		Choices: choices,
+	}
+
+	list.Render()
+
+	return list.Value
 }
 
 func (c *CliUI) Form(fields []Field, v ...interface{}) map[string]interface{} {

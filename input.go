@@ -1,4 +1,4 @@
-package cli
+package prompt
 
 type InputView struct {
 	theme *Theme
