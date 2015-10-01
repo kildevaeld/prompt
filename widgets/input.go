@@ -1,7 +1,11 @@
-package prompt
+package widgets
+
+import (
+	tm "github.com/kildevaeld/prompt/terminal"
+)
 
 type InputView struct {
-	theme *Theme
+	Theme *tm.Theme
 	Name  string
 	Label string
 	Value string
@@ -9,12 +13,12 @@ type InputView struct {
 
 func (c *InputView) Render() {
 
-	if c.theme == nil {
-		c.theme = DefaultTheme
+	if c.Theme == nil {
+		c.Theme = tm.DefaultTheme
 	}
 
-	cursor := Cursor{
-		writer: c.theme,
+	cursor := tm.Cursor{
+		Writer: c.Theme,
 	}
 
 	label := c.Label
@@ -22,40 +26,40 @@ func (c *InputView) Render() {
 		label = c.Name
 	}
 
-	c.theme.Printf("%s ", label)
+	c.Theme.Printf("%s ", label)
 
 	x := 0
 	var buffer []byte
 
 	for {
-		a, k, _ := getChar()
-		handleSignals(a)
-		if a == Backspace {
+		a, k, _ := tm.GetChar()
+		tm.HandleSignals(a)
+		if a == tm.Backspace {
 			if x == 0 {
 				continue
 			}
-			c.theme.Write([]byte("\b \b"))
+			c.Theme.Write([]byte("\b \b"))
 
 			x--
 			buffer = buffer[0:x]
 			continue
 
-		} else if a == Enter {
+		} else if a == tm.Enter {
 			c.Value = string(buffer)
 			break
-		} else if k == RightKeyCode {
+		} else if k == tm.RightKeyCode {
 			if x < len(buffer)-1 {
 				x++
 				cursor.Forward(1)
 			}
 			continue
-		} else if k == LeftKeyCode {
+		} else if k == tm.LeftKeyCode {
 			if x > 0 {
 				x--
 				cursor.Backward(1)
 			}
 			continue
-		} else if k == UpKeyCode || k == DownKeyCode {
+		} else if k == tm.UpKeyCode || k == tm.DownKeyCode {
 			continue
 		}
 
@@ -65,14 +69,14 @@ func (c *InputView) Render() {
 			buffer[x] = byte(a)
 		}
 
-		c.theme.WriteString(c.theme.Input.Color(string(a)))
+		c.Theme.WriteString(c.Theme.Input.Color(string(a)))
 
 		x++
 	}
 
 	cursor.Backward(x)
 
-	c.theme.Highlight("%s\n", buffer)
+	c.Theme.Highlight("%s\n", buffer)
 }
 
 func (c *InputView) GetValue() interface{} {
@@ -83,6 +87,6 @@ func (c *InputView) GetName() string {
 	return c.Name
 }
 
-func (c *InputView) SetTheme(theme *Theme) {
-	c.theme = theme
+func (c *InputView) SetTheme(theme *tm.Theme) {
+	c.Theme = theme
 }

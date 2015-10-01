@@ -5,8 +5,8 @@ import (
 	"os"
 	"time"
 
+	tm "github.com/kildevaeld/prompt/terminal"
 	"github.com/tj/go-spin"
-	"github.com/ttacon/chalk"
 )
 
 type Process struct {
@@ -15,7 +15,7 @@ type Process struct {
 }
 
 func (p *Process) Start() {
-	os.Stdout.Write([]byte(HideCursor))
+	os.Stdout.Write([]byte(tm.HideCursor))
 	p.done = make(chan bool)
 
 	ticker := time.NewTicker(100 * time.Millisecond)
@@ -42,14 +42,14 @@ func (p *Process) Start() {
 }
 
 func (p *Process) update(msg string) {
-	fmt.Printf("\r%s%s %s\r", Gray, p.Msg, chalk.Cyan.Color(msg))
+	fmt.Printf("\r%s%s %s\r", tm.Gray, p.Msg, tm.Cyan.Color(msg))
 
 }
 
 func (p *Process) Done(msg string) {
 	p.done <- true
-	os.Stdout.Write([]byte(ShowCursor))
-	fmt.Printf("\r%s%s %s\n", Gray, p.Msg, msg)
+	os.Stdout.Write([]byte(tm.ShowCursor))
+	fmt.Printf("\r%s%s %s\n", tm.Gray, p.Msg, msg)
 
 }
 
@@ -62,9 +62,9 @@ func NewProcess(msg string, fn func() error) error {
 	err := fn()
 	time.Sleep(300 * time.Millisecond)
 	if err != nil {
-		p.Done(chalk.Red.Color("error"))
+		p.Done(tm.Red.Color("error"))
 	} else {
-		p.Done(chalk.Green.Color("ok"))
+		p.Done(tm.Green.Color("ok"))
 	}
 	return err
 }

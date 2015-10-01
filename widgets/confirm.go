@@ -1,14 +1,18 @@
-package prompt
+package widgets
 
-import "time"
+import (
+	"time"
+
+	tm "github.com/kildevaeld/prompt/terminal"
+)
 
 type View interface {
 	Render() error
-	SetTheme(theme *Theme)
+	SetTheme(theme *tm.Theme)
 }
 
 type ConfirmView struct {
-	theme *Theme
+	Theme *tm.Theme
 	Name  string
 	Label string
 	Value bool
@@ -16,8 +20,8 @@ type ConfirmView struct {
 
 func (c *ConfirmView) Render() {
 
-	if c.theme == nil {
-		c.theme = DefaultTheme
+	if c.Theme == nil {
+		c.Theme = tm.DefaultTheme
 	}
 
 	label := c.Label
@@ -25,10 +29,10 @@ func (c *ConfirmView) Render() {
 		label = c.Name
 	}
 
-	c.theme.Printf("%s [yn]? ", label)
-	a, _, _ := getChar()
+	c.Theme.Printf("%s [yn]? ", label)
+	a, _, _ := tm.GetChar()
 
-	handleSignals(a)
+	tm.HandleSignals(a)
 
 	ans := string(a)
 	if ans == "y" || ans == "Y" {
@@ -38,14 +42,14 @@ func (c *ConfirmView) Render() {
 		c.Value = false
 		ans = "no"
 	} else {
-		c.theme.Printf("%s%s ", ClearLine, label)
-		c.theme.Highlight("please enter %s(es) or %s(o)", Bold.TextStyle("y"), Bold.TextStyle("n"))
+		c.Theme.Printf("%s%s ", tm.ClearLine, label)
+		c.Theme.Highlight("please enter %s(es) or %s(o)", tm.Bold.TextStyle("y"), tm.Bold.TextStyle("n"))
 
 		time.Sleep(1 * time.Second)
 		c.Render()
 		return
 	}
-	c.theme.Highlight("%s\n", ans)
+	c.Theme.Highlight("%s\n", ans)
 }
 
 func (c *ConfirmView) GetValue() interface{} {
@@ -56,6 +60,6 @@ func (c *ConfirmView) GetName() string {
 	return c.Name
 }
 
-func (c *ConfirmView) SetTheme(theme *Theme) {
-	c.theme = theme
+func (c *ConfirmView) SetTheme(theme *tm.Theme) {
+	c.Theme = theme
 }

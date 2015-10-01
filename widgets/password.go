@@ -1,7 +1,11 @@
-package prompt
+package widgets
+
+import (
+	tm "github.com/kildevaeld/prompt/terminal"
+)
 
 type PasswordView struct {
-	theme *Theme
+	Theme *tm.Theme
 	Name  string
 	Label string
 	Value string
@@ -9,12 +13,12 @@ type PasswordView struct {
 
 func (c *PasswordView) Render() {
 
-	if c.theme == nil {
-		c.theme = DefaultTheme
+	if c.Theme == nil {
+		c.Theme = tm.DefaultTheme
 	}
 
-	cursor := Cursor{
-		writer: c.theme,
+	cursor := tm.Cursor{
+		Writer: c.Theme,
 	}
 
 	label := c.Label
@@ -22,31 +26,31 @@ func (c *PasswordView) Render() {
 		label = c.Name
 	}
 
-	c.theme.Printf("%s ", label)
+	c.Theme.Printf("%s ", label)
 	x := 0
 
 	buffer := ""
 
 	for {
-		a, _, _ := getChar()
-		handleSignals(a)
-		if a == Backspace {
+		a, _, _ := tm.GetChar()
+		tm.HandleSignals(a)
+		if a == tm.Backspace {
 			if x == 0 {
 				continue
 			}
-			c.theme.Write([]byte("\b \b"))
+			c.Theme.Write([]byte("\b \b"))
 
 			x--
 			buffer = buffer[0:x]
 			continue
 
-		} else if a == Enter {
+		} else if a == tm.Enter {
 			c.Value = buffer
 			break
 		}
 
 		buffer += string(a)
-		c.theme.Write([]byte(c.theme.Input.Color("*")))
+		c.Theme.Write([]byte(c.Theme.Input.Color("*")))
 
 		x++
 	}
@@ -58,7 +62,7 @@ func (c *PasswordView) Render() {
 		x--
 	}
 
-	c.theme.Highlight("%s\n", str)
+	c.Theme.Highlight("%s\n", str)
 }
 
 func (c *PasswordView) GetValue() interface{} {
@@ -69,6 +73,6 @@ func (c *PasswordView) GetName() string {
 	return c.Name
 }
 
-func (c PasswordView) SetTheme(theme *Theme) {
-	c.theme = theme
+func (c PasswordView) SetTheme(theme *tm.Theme) {
+	c.Theme = theme
 }

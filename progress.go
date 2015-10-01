@@ -5,7 +5,7 @@ import (
 	"os"
 	"time"
 
-	"github.com/ttacon/chalk"
+	tm "github.com/kildevaeld/prompt/terminal"
 )
 
 type Progress struct {
@@ -17,7 +17,7 @@ func (p *Progress) Done(msg string) {
 }
 
 func (p *Progress) Update(msg string) {
-	fmt.Printf("\r\033[0K\033[90m%s %s", p.Msg, chalk.Cyan.Color(msg))
+	fmt.Printf("\r\033[0K\033[90m%s %s", p.Msg, tm.Cyan.Color(msg))
 }
 
 func NewProgress(msg string, fn func(func(str string)) error) error {
@@ -25,15 +25,15 @@ func NewProgress(msg string, fn func(func(str string)) error) error {
 	p := &Progress{
 		Msg: msg,
 	}
-	os.Stdout.Write([]byte(HideCursor))
+	os.Stdout.Write([]byte(tm.HideCursor))
 	err := fn(p.Update)
 
 	if err != nil {
-		p.Done(chalk.Red.Color("error"))
+		p.Done(tm.Red.Color("error"))
 	} else {
-		p.Done(chalk.Green.Color("ok"))
+		p.Done(tm.Green.Color("ok"))
 	}
 	time.Sleep(300 * time.Millisecond)
-	os.Stdout.Write([]byte(ShowCursor))
+	os.Stdout.Write([]byte(tm.ShowCursor))
 	return err
 }

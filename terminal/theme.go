@@ -1,4 +1,4 @@
-package prompt
+package terminal
 
 import (
 	"fmt"
@@ -10,7 +10,7 @@ type Theme struct {
 	Background, Foreground, HighlightForeground,
 	HighlightBackground, Input Color
 	Indent string
-	writer io.Writer
+	Writer io.Writer
 }
 
 func (t *Theme) Printf(msg string, args ...interface{}) {
@@ -26,7 +26,7 @@ func (t *Theme) WriteString(msg string) {
 }
 
 func (t *Theme) Write(bytes []byte) (int, error) {
-	return t.writer.Write(bytes)
+	return t.Writer.Write(bytes)
 }
 
 var DefaultTheme = &Theme{
@@ -35,5 +35,5 @@ var DefaultTheme = &Theme{
 	HighlightForeground: Cyan,
 	HighlightBackground: Gray,
 	Input:               White,
-	writer:              os.Stdout,
+	Writer:              os.Stdout,
 }

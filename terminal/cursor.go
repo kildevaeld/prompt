@@ -1,4 +1,4 @@
-package prompt
+package terminal
 
 import (
 	"fmt"
@@ -6,16 +6,16 @@ import (
 )
 
 type Cursor struct {
-	writer io.Writer
+	Writer io.Writer
 }
 
 func (c Cursor) move(i int, direction rune) Cursor {
-	c.writer.Write([]byte(fmt.Sprintf("\033[%d%s", i, string(direction))))
+	c.Writer.Write([]byte(fmt.Sprintf("\033[%d%s", i, string(direction))))
 	return c
 }
 
 func (c Cursor) Move(x, y int) Cursor {
-	c.writer.Write([]byte(fmt.Sprintf("\033[%d;%dH", x, y)))
+	c.Writer.Write([]byte(fmt.Sprintf("\033[%d;%dH", x, y)))
 	return c
 }
 
@@ -36,11 +36,11 @@ func (c Cursor) Down(y int) Cursor {
 }
 
 func (c Cursor) Hide() Cursor {
-	c.writer.Write([]byte("\033[?25l"))
+	c.Writer.Write([]byte("\033[?25l"))
 	return c
 }
 
 func (c Cursor) Show() Cursor {
-	c.writer.Write([]byte("\033[?25h"))
+	c.Writer.Write([]byte("\033[?25h"))
 	return c
 }

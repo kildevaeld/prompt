@@ -1,17 +1,22 @@
 package prompt
 
-import "io"
+import (
+	"io"
+
+	"github.com/kildevaeld/prompt/terminal"
+	"github.com/kildevaeld/prompt/widgets"
+)
 
 type CliUI struct {
-	Theme *Theme
-	Cursor
+	Theme *terminal.Theme
+	terminal.Cursor
 	writer io.Writer
 }
 
 func (c *CliUI) Password(msg string) string {
-	password := &PasswordView{
+	password := &widgets.PasswordView{
 		Label: msg,
-		theme: c.Theme,
+		Theme: c.Theme,
 	}
 	password.Render()
 
@@ -19,9 +24,9 @@ func (c *CliUI) Password(msg string) string {
 }
 
 func (c *CliUI) Confirm(msg string) bool {
-	confirm := ConfirmView{
+	confirm := &widgets.ConfirmView{
 		Label: msg,
-		theme: c.Theme,
+		Theme: c.Theme,
 	}
 
 	confirm.Render()
@@ -30,9 +35,9 @@ func (c *CliUI) Confirm(msg string) bool {
 }
 
 func (c *CliUI) List(msg string, choices []string) string {
-	list := ListView{
+	list := &widgets.ListView{
 		Label:   msg,
-		theme:   c.Theme,
+		Theme:   c.Theme,
 		Choices: choices,
 	}
 
@@ -41,8 +46,8 @@ func (c *CliUI) List(msg string, choices []string) string {
 	return list.Value
 }
 
-func (c *CliUI) Form(fields []Field, v ...interface{}) map[string]interface{} {
-	form := NewForm(c.Theme, fields)
+func (c *CliUI) Form(fields []widgets.Field, v ...interface{}) map[string]interface{} {
+	form := widgets.NewForm(c.Theme, fields)
 	form.Render()
 
 	if len(v) > 0 {
@@ -63,10 +68,10 @@ func (c *CliUI) Save() {
 func NewUI() *CliUI {
 
 	return &CliUI{
-		writer: DefaultTheme.writer,
-		Theme:  DefaultTheme,
-		Cursor: Cursor{
-			writer: DefaultTheme.writer,
+		writer: terminal.DefaultTheme.Writer,
+		Theme:  terminal.DefaultTheme,
+		Cursor: terminal.Cursor{
+			Writer: terminal.DefaultTheme.Writer,
 		},
 	}
 

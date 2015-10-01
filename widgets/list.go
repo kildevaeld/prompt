@@ -1,21 +1,25 @@
-package prompt
+package widgets
+
+import (
+	tm "github.com/kildevaeld/prompt/terminal"
+)
 
 type ListView struct {
 	Name    string
 	Label   string
 	Value   string
 	Choices []string
-	theme   *Theme
+	Theme   *tm.Theme
 }
 
 func (c *ListView) Render() {
 	choices := c.Choices
-	if c.theme == nil {
-		c.theme = DefaultTheme
+	if c.Theme == nil {
+		c.Theme = tm.DefaultTheme
 	}
 
-	cursor := Cursor{
-		writer: c.theme,
+	cursor := tm.Cursor{
+		Writer: c.Theme,
 	}
 
 	label := c.Label
@@ -23,7 +27,7 @@ func (c *ListView) Render() {
 		label = c.Name
 	}
 	cursor.Hide()
-	c.theme.Printf("%s\n", label)
+	c.Theme.Printf("%s\n", label)
 
 	for i, s := range choices {
 		if i == len(choices)-1 {
@@ -31,7 +35,7 @@ func (c *ListView) Render() {
 		} else {
 			c.print_line(s)
 		}
-		c.theme.WriteString("\n")
+		c.Theme.WriteString("\n")
 
 	}
 	l := len(choices)
@@ -39,14 +43,14 @@ func (c *ListView) Render() {
 	cursor.Up(1)
 	curPos := l - 1
 	for {
-		a, k, e := getChar()
+		a, k, e := tm.GetChar()
 		if e != nil {
 			return
 		}
 
-		handleSignals(a)
+		tm.HandleSignals(a)
 
-		if k == UpKeyCode && curPos != 0 {
+		if k == tm.UpKeyCode && curPos != 0 {
 			cursor.Backward(len(choices[curPos]) + 3)
 			c.print_line(choices[curPos])
 
@@ -55,7 +59,7 @@ func (c *ListView) Render() {
 
 			c.highlight_line(choices[curPos])
 
-		} else if k == DownKeyCode && curPos < l-1 {
+		} else if k == tm.DownKeyCode && curPos < l-1 {
 			cursor.Backward(len(choices[curPos]) + 3)
 			c.print_line(choices[curPos])
 
@@ -63,7 +67,7 @@ func (c *ListView) Render() {
 			cursor.Down(1).Backward(len(choices[curPos-1]) + 3)
 
 			c.highlight_line(choices[curPos])
-		} else if a == Enter {
+		} else if a == tm.Enter {
 			break
 		}
 	}
@@ -73,21 +77,21 @@ func (c *ListView) Render() {
 
 	for l > -1 {
 		cursor.Up(1)
-		c.theme.Write([]byte(ClearLine))
+		c.Theme.Write([]byte(tm.ClearLine))
 		l = l - 1
 	}
-	c.theme.Printf("%s ", label)
-	c.theme.Highlight("%s\n", c.Value)
+	c.Theme.Printf("%s ", label)
+	c.Theme.Highlight("%s\n", c.Value)
 
 	return
 }
 
 func (c *ListView) highlight_line(s string) {
-	c.theme.Highlight(" > %s", s)
+	c.Theme.Highlight(" > %s", s)
 }
 
 func (c *ListView) print_line(s string) {
-	c.theme.Printf("   %s", s)
+	c.Theme.Printf("   %s", s)
 }
 
 func (c *ListView) GetValue() interface{} {
@@ -98,6 +102,6 @@ func (c *ListView) GetName() string {
 	return c.Name
 }
 
-func (c *ListView) SetTheme(theme *Theme) {
-	c.theme = theme
+func (c *ListView) SetTheme(theme *tm.Theme) {
+	c.Theme = theme
 }
