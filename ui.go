@@ -70,6 +70,10 @@ func (c *CliUI) Restore() {
 	terminal.Restore()
 }
 
+func (c *CliUI) Printf(msg string, args ...interface{}) {
+	c.Theme.Printf(msg, args...)
+}
+
 func NewUI() *CliUI {
 
 	return &CliUI{

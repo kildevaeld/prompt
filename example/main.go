@@ -1,9 +1,8 @@
 package main
 
 import (
-	"fmt"
-
 	"github.com/kildevaeld/prompt"
+	"github.com/kildevaeld/prompt/terminal"
 	"github.com/kildevaeld/prompt/widgets"
 )
 
@@ -16,7 +15,7 @@ type Result struct {
 func main() {
 
 	ui := prompt.NewUI()
-
+	ui.Theme = terminal.DefaultTheme
 	ui.Save() // Clear the terminal
 	// or ui.Save()
 
@@ -37,12 +36,7 @@ func main() {
 		},
 	}, &result)
 
-	ui.Restore()
-	fmt.Printf("%#v", result)
-
-	//fmt.Printf("%#v", result)
-	//ui.Move(10, 20)
-	//ui.Password("Password:")
-	//ui.Confirm("No?")
+	// ui.Restore() to restore from "Save"
+	ui.Printf("%#v", result)
 
 }
