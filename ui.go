@@ -59,10 +59,15 @@ func (c *CliUI) Form(fields []widgets.Field, v ...interface{}) map[string]interf
 
 func (c *CliUI) Clear() {
 	c.writer.Write([]byte("\033[2J"))
+	c.Move(0, 0)
 }
 
 func (c *CliUI) Save() {
+	terminal.Save()
+}
 
+func (c *CliUI) Restore() {
+	terminal.Restore()
 }
 
 func NewUI() *CliUI {

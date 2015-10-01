@@ -1,6 +1,11 @@
 package main
 
-import "github.com/kildevaeld/prompt"
+import (
+	"fmt"
+
+	"github.com/kildevaeld/prompt"
+	"github.com/kildevaeld/prompt/widgets"
+)
 
 type Result struct {
 	Name     string
@@ -11,28 +16,29 @@ type Result struct {
 func main() {
 
 	ui := prompt.NewUI()
-	ui.Clear()
-	ui.Theme.Indent = "  "
 
-	/*var result Result
-	ui.Form([]prompt.Field{
-		&prompt.InputView{
+	ui.Save() // Clear the terminal
+	// or ui.Save()
+
+	var result Result
+
+	ui.Form([]widgets.Field{
+		&widgets.InputView{
 			Name:  "name",
-			Label: "Okiedokie",
+			Label: "Please enter name?",
 		},
-		&prompt.PasswordView{
+		&widgets.PasswordView{
 			Name:  "password",
 			Label: "Password",
 		},
-		&prompt.ListView{
-			Name: "list",
-			Choices: []string{
-				"Ost", "Makral",
-			},
+		&widgets.ListView{
+			Name:    "List",
+			Choices: []string{"Cheese", "Ham"},
 		},
-	}, &result)*/
+	}, &result)
 
-	ui.List("List", []string{"Første valg", "Andet valg"})
+	ui.Restore()
+	fmt.Printf("%#v", result)
 
 	//fmt.Printf("%#v", result)
 	//ui.Move(10, 20)

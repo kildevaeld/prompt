@@ -2,8 +2,14 @@
 Golang terminal
 
 ## Usage
- 
+
 ```go
+
+import (
+	"fmt"
+	"github.com/kildevaeld/prompt"
+	"github.com/kildevaeld/prompt/widgets"
+)
 
 type Result struct {
 	Name     string
@@ -11,9 +17,9 @@ type Result struct {
 	List 	 string
 }
 
-ui := cli.NewUI()
+ui := prompt.NewUI()
 
-ui.Clear() // Clear the terminal
+prompt.Clear() // Clear the terminal
 // or ui.Save()
 
 var result Result
