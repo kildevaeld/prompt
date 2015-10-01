@@ -53,5 +53,5 @@ func main() {
 ```
 
 And it renders like this in the terminal:
-![ScreenShot](https://raw.github.com/kildevaeld/prompt/master/example/screenshot.png)
+![ScreenShot](https://raw.github.com/kildevaeld/go-prompt/master/example/screenshot.png)
 
