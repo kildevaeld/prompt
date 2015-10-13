@@ -77,6 +77,7 @@ func (c *InputView) Render() {
 	cursor.Backward(x)
 
 	c.Theme.Highlight("%s\n", buffer)
+
 }
 
 func (c *InputView) GetValue() interface{} {

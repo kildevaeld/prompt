@@ -1,21 +1,25 @@
 package prompt
 
 import (
-	"fmt"
-	"os"
 	"time"
 
+	acsii "github.com/kildevaeld/go-acsii"
 	tm "github.com/kildevaeld/prompt/terminal"
 	"github.com/tj/go-spin"
 )
 
 type Process struct {
-	Msg  string
-	done chan bool
+	Msg        string
+	Theme      *tm.Theme
+	done       chan bool
+	msgLen     int
+	ErrorMsg   string
+	SuccessMsg string
 }
 
 func (p *Process) Start() {
-	os.Stdout.Write([]byte(tm.HideCursor))
+	p.Theme.Cursor.Hide()
+
 	p.done = make(chan bool)
 
 	ticker := time.NewTicker(100 * time.Millisecond)
@@ -41,30 +45,37 @@ func (p *Process) Start() {
 
 }
 
-func (p *Process) update(msg string) {
-	fmt.Printf("\r%s%s %s\r", tm.Gray, p.Msg, tm.Cyan.Color(msg))
+func (p *Process) Run(fn func() error) error {
+	p.Start()
+	err := fn()
+	time.Sleep(300 * time.Millisecond)
+	if err != nil {
+		p.Done(p.Theme.Error.Color(p.ErrorMsg))
+	} else {
+		p.Done(p.Theme.Success.Color(p.SuccessMsg))
+	}
+	return err
+}
 
+func (p *Process) update(msg string) {
+	p.Theme.Cursor.Backward(p.msgLen)
+	p.msgLen = p.Theme.Printf("%s%s %s", acsii.EraseLine, p.Msg, p.Theme.HighlightForeground.Color(msg))
 }
 
 func (p *Process) Done(msg string) {
 	p.done <- true
-	os.Stdout.Write([]byte(tm.ShowCursor))
-	fmt.Printf("\r%s%s %s\n", tm.Gray, p.Msg, msg)
-
+	p.Theme.Cursor.Show().Backward(p.msgLen)
+	p.Theme.Printf("%s%s %s\n", acsii.EraseLine, p.Msg, msg)
 }
 
 func NewProcess(msg string, fn func() error) error {
 
-	p := &Process{Msg: msg}
-
-	p.Start()
-
-	err := fn()
-	time.Sleep(300 * time.Millisecond)
-	if err != nil {
-		p.Done(tm.Red.Color("error"))
-	} else {
-		p.Done(tm.Green.Color("ok"))
+	p := &Process{
+		Msg:        msg,
+		Theme:      tm.DefaultTheme,
+		ErrorMsg:   "error",
+		SuccessMsg: "ok",
 	}
-	return err
+
+	return p.Run(fn)
 }

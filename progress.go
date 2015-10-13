@@ -1,39 +1,50 @@
 package prompt
 
 import (
-	"fmt"
-	"os"
-	"time"
-
+	acsii "github.com/kildevaeld/go-acsii"
 	tm "github.com/kildevaeld/prompt/terminal"
 )
 
 type Progress struct {
-	Msg string
+	Msg        string
+	Theme      *tm.Theme
+	ErrorMsg   string
+	SuccessMsg string
+	msgLen     int
 }
 
 func (p *Progress) Done(msg string) {
-	p.Update(msg + "\n")
+	p.Theme.Cursor.Show().Backward(p.msgLen)
+	p.Theme.Printf("%s%s %s\n", acsii.EraseLine, p.Msg, msg)
 }
 
 func (p *Progress) Update(msg string) {
-	fmt.Printf("\r\033[0K\033[90m%s %s", p.Msg, tm.Cyan.Color(msg))
+	p.Theme.Cursor.Backward(p.msgLen)
+	p.msgLen = p.Theme.Printf("%s%s %s", acsii.EraseLine, p.Msg, p.Theme.HighlightForeground.Color(msg))
+}
+
+func (p *Progress) Run(fn func(func(str string)) error) error {
+	p.Theme.Cursor.Hide()
+
+	err := fn(p.Update)
+
+	if err != nil {
+		p.Done(p.Theme.Error.Color(p.ErrorMsg))
+	} else {
+		p.Done(p.Theme.Success.Color(p.SuccessMsg))
+	}
+
+	return err
 }
 
 func NewProgress(msg string, fn func(func(str string)) error) error {
 
 	p := &Progress{
-		Msg: msg,
+		Msg:        msg,
+		Theme:      tm.DefaultTheme,
+		ErrorMsg:   "error",
+		SuccessMsg: "ok",
 	}
-	os.Stdout.Write([]byte(tm.HideCursor))
-	err := fn(p.Update)
 
-	if err != nil {
-		p.Done(tm.Red.Color("error"))
-	} else {
-		p.Done(tm.Green.Color("ok"))
-	}
-	time.Sleep(300 * time.Millisecond)
-	os.Stdout.Write([]byte(tm.ShowCursor))
-	return err
+	return p.Run(fn)
 }

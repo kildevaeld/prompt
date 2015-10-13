@@ -46,6 +46,30 @@ func (c *CliUI) List(msg string, choices []string) string {
 	return list.Value
 }
 
+func (c *CliUI) Process(msg string) *Process {
+
+	process := &Process{
+		Theme:      c.Theme,
+		Msg:        msg,
+		ErrorMsg:   "error",
+		SuccessMsg: "success",
+	}
+
+	return process
+}
+
+func (c *CliUI) Progress(msg string) *Progress {
+
+	progress := &Progress{
+		Theme:      c.Theme,
+		Msg:        msg,
+		ErrorMsg:   "error",
+		SuccessMsg: "success",
+	}
+
+	return progress
+}
+
 func (c *CliUI) Form(fields []widgets.Field, v ...interface{}) map[string]interface{} {
 	form := widgets.NewForm(c.Theme, fields)
 	form.Render()

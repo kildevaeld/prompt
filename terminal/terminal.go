@@ -4,6 +4,7 @@ import (
 	"os"
 	"syscall"
 
+	acsii "github.com/kildevaeld/go-acsii"
 	"golang.org/x/crypto/ssh/terminal"
 
 	"github.com/pkg/term"
@@ -95,36 +96,16 @@ func GetSize() (int, int, error) {
 	return w, h, nil
 }
 
-/*func MoveCursor(x, y int) {
-  os.Stdout.Write([]byte(fmt.Sprintf("\033[%d;%dH", x, y)))
-}
-
-func moveUp(i int) {
-  os.Stdout.Write([]byte(fmt.Sprintf("\033[%dA", i)))
-}
-
-func moveDown(i int) {
-  os.Stdout.Write([]byte(fmt.Sprintf("\033[%dB", i)))
-}
-
-func moveForward(i int) {
-  os.Stdout.Write([]byte(fmt.Sprintf("\033[%dC", i)))
-}
-
-func moveBack(i int) {
-  os.Stdout.Write([]byte(fmt.Sprintf("\033[%dD", i)))
-}*/
-
 func Save() {
-	os.Stdout.Write([]byte("\033[?1049h\033[H"))
+	os.Stdout.Write([]byte(acsii.ESC + "?1049h\033[H"))
 }
 
 func Restore() {
-	os.Stdout.Write([]byte("\033[?1049l"))
+	os.Stdout.Write([]byte(acsii.ESC + "?1049l"))
 }
 
 func Clear() {
-	os.Stdout.Write([]byte("\033[2J"))
+	os.Stdout.Write([]byte(acsii.ESC + "2J"))
 }
 
 func HandleSignals(c int) {

@@ -82,7 +82,7 @@ func (c *ListView) Render() {
 	}
 	c.Theme.Printf("%s ", label)
 	c.Theme.Highlight("%s\n", c.Value)
-
+	cursor.Show()
 	return
 }
 

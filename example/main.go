@@ -1,6 +1,9 @@
 package main
 
 import (
+	"fmt"
+	"time"
+
 	"github.com/kildevaeld/prompt"
 	"github.com/kildevaeld/prompt/terminal"
 	"github.com/kildevaeld/prompt/widgets"
@@ -20,6 +23,21 @@ func main() {
 	// or ui.Save()
 
 	var result Result
+
+	prompt.NewProcess("Test mig", func() error {
+		time.Sleep(1 * time.Second)
+		return nil
+	})
+
+	prompt.NewProgress("msg", func(fn func(string)) error {
+
+		for i := 0; i < 10; i++ {
+			time.Sleep(500 * time.Millisecond)
+			fn(fmt.Sprintf("%d/10", i))
+		}
+
+		return nil
+	})
 
 	ui.Form([]widgets.Field{
 		&widgets.InputView{

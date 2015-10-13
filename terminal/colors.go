@@ -2,31 +2,24 @@
 package terminal
 
 import "fmt"
+import acsii "github.com/kildevaeld/go-acsii"
 
 // Color represents one of the ANSI color escape codes.
 // http://en.wikipedia.org/wiki/ANSI_escape_code#Colors
 type Color struct {
-	value int
-}
-
-// Value returns the individual value for this color
-// (Actually it's really just its index in the list
-// of color escape codes with the list being
-// [black, red, green, yellow, blue, magenta, cyan, white].
-func (c Color) Value() int {
-	return c.value
+	*acsii.Style
 }
 
 // Color colors the foreground of the given string
 // (whatever the previous background color was, it is
 // left alone).
 func (c Color) Color(val string) string {
-	return fmt.Sprintf("%s%s%s", c, val, ResetColor)
+	return fmt.Sprintf("%s%s%s", c.Open(), val, c.Close())
 }
 
-func (c Color) String() string {
+/*func (c Color) String() string {
 	return fmt.Sprintf("\u001b[%dm", 30+c.value)
-}
+}*/
 
 // NewStyle creates a style with a foreground of the
 // color we're creating the style from.
@@ -43,7 +36,7 @@ func (t textStyleDemarcation) String() string {
 // A TextStyle represents the ways we can style the text:
 // bold, dim, italic, underline, inverse, hidden or strikethrough.
 type TextStyle struct {
-	start, stop textStyleDemarcation
+	*acsii.Style
 }
 
 // TexStyle styles the given string using the desired text style.
@@ -51,14 +44,7 @@ func (t TextStyle) TextStyle(val string) string {
 	if t == emptyTextStyle {
 		return val
 	}
-	return fmt.Sprintf("%s%s%s", t.start, val, t.stop)
-}
-
-// NOTE: this function specifically does not work as desired because
-// text styles must be wrapped around the text they are meant to style.
-// As such, use TextStyle() or Style.Style() instead.
-func (t TextStyle) String() string {
-	return fmt.Sprintf("%s%s", t.start, t.stop)
+	return fmt.Sprintf("%s%s%s", t.Open(), val, t.Close())
 }
 
 // NewStyle creates a style starting with the current TextStyle
@@ -89,7 +75,7 @@ type Style interface {
 	// WithStyle allows us to set the text style in a builder pattern
 	// style.
 	WithTextStyle(TextStyle) Style
-	String() string
+	//String() string
 }
 
 type style struct {
@@ -108,14 +94,15 @@ func (s *style) WithForeground(col Color) Style {
 	return s
 }
 
-func (s *style) String() string {
+/*func (s *style) String() string {
 	var toReturn string
 	toReturn = fmt.Sprintf("\u001b[%dm", 40+s.background.Value())
 	return toReturn + fmt.Sprintf("\u001b[%dm", 30+s.foreground.Value())
-}
+}*/
 
 func (s *style) Style(val string) string {
-	return fmt.Sprintf("%s%s%s", s, s.textStyle.TextStyle(val), Reset)
+	color := s.background.Color(s.foreground.Color(s.textStyle.TextStyle(val)))
+	return fmt.Sprintf("%s", color)
 }
 
 func (s *style) Foreground(col Color) {
@@ -133,25 +120,25 @@ func (s *style) WithTextStyle(textStyle TextStyle) Style {
 
 var (
 	// Colors
-	Black      = Color{0}
-	Gray       = Color{60}
-	Red        = Color{1}
-	Green      = Color{2}
-	Yellow     = Color{3}
-	Blue       = Color{4}
-	Magenta    = Color{5}
-	Cyan       = Color{6}
-	White      = Color{7}
-	ResetColor = Color{9}
+	Black      = Color{&acsii.Black}
+	Gray       = Color{&acsii.Gray}
+	Red        = Color{&acsii.Red}
+	Green      = Color{&acsii.Green}
+	Yellow     = Color{&acsii.Yellow}
+	Blue       = Color{&acsii.Blue}
+	Magenta    = Color{&acsii.Megenta}
+	Cyan       = Color{&acsii.Cyan}
+	White      = Color{&acsii.White}
+	ResetColor = Color{&acsii.Reset}
 
 	// Text Styles
-	Bold          = TextStyle{1, 22}
-	Dim           = TextStyle{2, 22}
-	Italic        = TextStyle{3, 23}
-	Underline     = TextStyle{4, 24}
-	Inverse       = TextStyle{7, 27}
-	Hidden        = TextStyle{8, 28}
-	Strikethrough = TextStyle{9, 29}
+	Bold          = TextStyle{&acsii.Bold}
+	Dim           = TextStyle{&acsii.Dim}
+	Italic        = TextStyle{&acsii.Italic}
+	Underline     = TextStyle{&acsii.Underline}
+	Inverse       = TextStyle{&acsii.Inverse}
+	Hidden        = TextStyle{&acsii.Hidden}
+	Strikethrough = TextStyle{&acsii.Strikethough}
 
 	Reset = &style{
 		foreground: ResetColor,
