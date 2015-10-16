@@ -2,59 +2,53 @@ package main
 
 import (
 	"fmt"
-	"time"
+	"log"
 
 	"github.com/kildevaeld/prompt"
 	"github.com/kildevaeld/prompt/terminal"
-	"github.com/kildevaeld/prompt/widgets"
 )
 
 type Result struct {
-	Name     string
-	Password string
-	List     string
+	Name     string   `message:"Enter name please?"`
+	Password string   `form:"password"`
+	List     string   `form:"list" choices:"Choice 1, Choice 2"`
+	Checkbox []string `form:"checkbox" choices:"Choice 1, Choice 2"`
 }
 
 func main() {
 
 	ui := prompt.NewUI()
 	ui.Theme = terminal.DefaultTheme
-	ui.Save() // Clear the terminal
+	//ui.Clear() // Clear the terminal
 	// or ui.Save()
 
-	var result Result
+	//var result Result
 
-	prompt.NewProcess("Test mig", func() error {
-		time.Sleep(1 * time.Second)
-		return nil
-	})
-
-	prompt.NewProgress("msg", func(fn func(string)) error {
-
-		for i := 0; i < 10; i++ {
-			time.Sleep(500 * time.Millisecond)
-			fn(fmt.Sprintf("%d/10", i))
-		}
-
-		return nil
-	})
-
-	ui.Form([]widgets.Field{
-		&widgets.InputView{
-			Name:  "name",
-			Label: "Please enter name?",
+	/*ui.FormWithFields([]form.Field{
+		&form.Input{
+			Name:    "name",
+			Message: "Please enter name?",
 		},
-		&widgets.PasswordView{
-			Name:  "password",
-			Label: "Password",
+		&form.Password{
+			Name:    "password",
+			Message: "Password",
 		},
-		&widgets.ListView{
+		&form.List{
 			Name:    "List",
 			Choices: []string{"Cheese", "Ham"},
 		},
-	}, &result)
+	}, &result)*/
 
+	//fmt.Printf("%#v\n", result)
+	// Or
+	var ret Result
+	if err := ui.Form(&ret); err != nil {
+		log.Fatal(err)
+	}
+
+	fmt.Printf("%#v\n", ret)
+	//form.Run()
 	// ui.Restore() to restore from "Save"
-	ui.Printf("%#v", result)
+	//ui.Printf("%#v", result)
 
 }

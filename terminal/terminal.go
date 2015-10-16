@@ -21,6 +21,7 @@ const (
 	LeftKeyCode  = 37
 	Enter        = 13
 	Backspace    = 127
+	Space        = 32
 )
 
 const (
@@ -110,10 +111,13 @@ func Clear() {
 
 func HandleSignals(c int) {
 	pid := syscall.Getpid()
+	cur := Cursor{os.Stdout}
 	switch c {
 	case keyCtrlC:
+		cur.Show()
 		syscall.Kill(pid, syscall.SIGINT)
 	case keyCtrlZ:
+		cur.Show()
 		syscall.Kill(pid, syscall.SIGTSTP)
 	}
 }

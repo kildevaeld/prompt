@@ -1,10 +1,11 @@
 package prompt
 
 import (
+	"fmt"
 	"io"
 
+	"github.com/kildevaeld/prompt/form"
 	"github.com/kildevaeld/prompt/terminal"
-	"github.com/kildevaeld/prompt/widgets"
 )
 
 type CliUI struct {
@@ -14,43 +15,55 @@ type CliUI struct {
 }
 
 func (c *CliUI) Password(msg string) string {
-	password := &widgets.PasswordView{
-		Label: msg,
-		Theme: c.Theme,
+	password := &form.Password{
+		Message: msg,
+		Theme:   c.Theme,
 	}
-	password.Render()
+	password.Run()
 
 	return password.Value
 }
 
 func (c *CliUI) Confirm(msg string) bool {
-	confirm := &widgets.ConfirmView{
-		Label: msg,
-		Theme: c.Theme,
+	confirm := &form.Confirm{
+		Message: msg,
+		Theme:   c.Theme,
 	}
 
-	confirm.Render()
+	confirm.Run()
 
 	return confirm.Value
 }
 
 func (c *CliUI) List(msg string, choices []string) string {
-	list := &widgets.ListView{
-		Label:   msg,
+	list := &form.List{
+		Message: msg,
 		Theme:   c.Theme,
 		Choices: choices,
 	}
 
-	list.Render()
+	list.Run()
 
 	return list.Value
 }
 
-func (c *CliUI) Process(msg string) *Process {
+func (c *CliUI) Input(msg string) string {
+	input := &form.Input{
+		Message: msg,
+		Theme:   c.Theme,
+	}
+
+	input.Run()
+
+	return input.Value
+
+}
+
+func (c *CliUI) Process(msg string, args ...interface{}) *Process {
 
 	process := &Process{
 		Theme:      c.Theme,
-		Msg:        msg,
+		Msg:        fmt.Sprintf(msg, args...),
 		ErrorMsg:   "error",
 		SuccessMsg: "success",
 	}
@@ -70,15 +83,19 @@ func (c *CliUI) Progress(msg string) *Progress {
 	return progress
 }
 
-func (c *CliUI) Form(fields []widgets.Field, v ...interface{}) map[string]interface{} {
-	form := widgets.NewForm(c.Theme, fields)
-	form.Render()
+func (c *CliUI) FormWithFields(fields []form.Field, v ...interface{}) map[string]interface{} {
+	form := form.NewForm(c.Theme, fields)
+	form.Run()
 
 	if len(v) > 0 {
 		form.GetValue(v[0])
 	}
 
 	return form.Value
+}
+
+func (c *CliUI) Form(v interface{}) error {
+	return form.FormFromStruct(c.Theme, v)
 }
 
 func (c *CliUI) Clear() {

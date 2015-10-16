@@ -7,7 +7,7 @@ import acsii "github.com/kildevaeld/go-acsii"
 // Color represents one of the ANSI color escape codes.
 // http://en.wikipedia.org/wiki/ANSI_escape_code#Colors
 type Color struct {
-	*acsii.Style
+	acsii.Style
 }
 
 // Color colors the foreground of the given string
@@ -36,7 +36,7 @@ func (t textStyleDemarcation) String() string {
 // A TextStyle represents the ways we can style the text:
 // bold, dim, italic, underline, inverse, hidden or strikethrough.
 type TextStyle struct {
-	*acsii.Style
+	acsii.Style
 }
 
 // TexStyle styles the given string using the desired text style.
@@ -120,25 +120,25 @@ func (s *style) WithTextStyle(textStyle TextStyle) Style {
 
 var (
 	// Colors
-	Black      = Color{&acsii.Black}
-	Gray       = Color{&acsii.Gray}
-	Red        = Color{&acsii.Red}
-	Green      = Color{&acsii.Green}
-	Yellow     = Color{&acsii.Yellow}
-	Blue       = Color{&acsii.Blue}
-	Magenta    = Color{&acsii.Megenta}
-	Cyan       = Color{&acsii.Cyan}
-	White      = Color{&acsii.White}
-	ResetColor = Color{&acsii.Reset}
+	Black      = Color{acsii.Black}
+	Gray       = Color{acsii.Gray}
+	Red        = Color{acsii.Red}
+	Green      = Color{acsii.Green}
+	Yellow     = Color{acsii.Yellow}
+	Blue       = Color{acsii.Blue}
+	Magenta    = Color{acsii.Megenta}
+	Cyan       = Color{acsii.Cyan}
+	White      = Color{acsii.White}
+	ResetColor = Color{acsii.Reset}
 
 	// Text Styles
-	Bold          = TextStyle{&acsii.Bold}
-	Dim           = TextStyle{&acsii.Dim}
-	Italic        = TextStyle{&acsii.Italic}
-	Underline     = TextStyle{&acsii.Underline}
-	Inverse       = TextStyle{&acsii.Inverse}
-	Hidden        = TextStyle{&acsii.Hidden}
-	Strikethrough = TextStyle{&acsii.Strikethough}
+	Bold          = TextStyle{acsii.Bold}
+	Dim           = TextStyle{acsii.Dim}
+	Italic        = TextStyle{acsii.Italic}
+	Underline     = TextStyle{acsii.Underline}
+	Inverse       = TextStyle{acsii.Inverse}
+	Hidden        = TextStyle{acsii.Hidden}
+	Strikethrough = TextStyle{acsii.Strikethough}
 
 	Reset = &style{
 		foreground: ResetColor,

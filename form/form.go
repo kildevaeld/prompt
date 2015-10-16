@@ -1,17 +1,17 @@
-package widgets
+package form
 
 import (
 	"errors"
 
 	"github.com/kildevaeld/prompt/terminal"
 	"github.com/mitchellh/mapstructure"
+	"github.com/oleiade/reflections"
 )
 
 type Field interface {
-	Render()
+	Run()
 	GetValue() interface{}
 	GetName() string
-	SetTheme(theme *terminal.Theme)
 }
 
 type Form struct {
@@ -20,12 +20,12 @@ type Form struct {
 	Value  map[string]interface{}
 }
 
-func (f *Form) Render() {
+func (f *Form) Run() {
 	values := make(map[string]interface{})
 
 	for _, field := range f.fields {
-		field.SetTheme(f.Theme)
-		field.Render()
+		//field.SetTheme(f.Theme)
+		field.Run()
 		values[field.GetName()] = field.GetValue()
 	}
 	f.Value = values
@@ -40,4 +40,30 @@ func (f *Form) GetValue(v interface{}) error {
 
 func NewForm(theme *terminal.Theme, fields []Field) *Form {
 	return &Form{fields, theme, nil}
+}
+
+func FormFromStruct(theme *terminal.Theme, target interface{}) error {
+	fields, err := reflections.Fields(target)
+
+	if err != nil {
+		return err
+	}
+
+	var formFields []Field
+
+	for _, fieldName := range fields {
+
+		field, err := reflectField(fieldName, target)
+		if err != nil {
+			return err
+		}
+		formFields = append(formFields, field)
+
+	}
+
+	form := NewForm(theme, formFields)
+	form.Run()
+
+	return form.GetValue(target)
+
 }
