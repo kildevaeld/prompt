@@ -14,9 +14,9 @@ func (v Validation) Validate(value interface{}) bool {
 type Validations []Validation
 
 func (v Validations) Validate() bool {
-
+	return false
 }
 
 func (v Validations) String() string {
-
+	return ""
 }

@@ -47,6 +47,18 @@ func (c *CliUI) List(msg string, choices []string) string {
 	return list.Value
 }
 
+func (c *CliUI) PaginatedList(msg string, paginate func(page int) []string) string {
+	list := &form.PaginatedList{
+		Message:  msg,
+		Theme:    c.Theme,
+		Paginate: paginate,
+	}
+
+	list.Run()
+
+	return list.Value
+}
+
 func (c *CliUI) Input(msg string) string {
 	input := &form.Input{
 		Message: msg,

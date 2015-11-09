@@ -2,12 +2,12 @@
 package terminal
 
 import "fmt"
-import acsii "github.com/kildevaeld/go-acsii"
+import ascii "github.com/kildevaeld/go-ascii"
 
 // Color represents one of the ANSI color escape codes.
 // http://en.wikipedia.org/wiki/ANSI_escape_code#Colors
 type Color struct {
-	acsii.Style
+	ascii.Style
 }
 
 // Color colors the foreground of the given string
@@ -36,7 +36,7 @@ func (t textStyleDemarcation) String() string {
 // A TextStyle represents the ways we can style the text:
 // bold, dim, italic, underline, inverse, hidden or strikethrough.
 type TextStyle struct {
-	acsii.Style
+	ascii.Style
 }
 
 // TexStyle styles the given string using the desired text style.
@@ -120,25 +120,25 @@ func (s *style) WithTextStyle(textStyle TextStyle) Style {
 
 var (
 	// Colors
-	Black      = Color{acsii.Black}
-	Gray       = Color{acsii.Gray}
-	Red        = Color{acsii.Red}
-	Green      = Color{acsii.Green}
-	Yellow     = Color{acsii.Yellow}
-	Blue       = Color{acsii.Blue}
-	Magenta    = Color{acsii.Megenta}
-	Cyan       = Color{acsii.Cyan}
-	White      = Color{acsii.White}
-	ResetColor = Color{acsii.Reset}
+	Black      = Color{ascii.Black}
+	Gray       = Color{ascii.Gray}
+	Red        = Color{ascii.Red}
+	Green      = Color{ascii.Green}
+	Yellow     = Color{ascii.Yellow}
+	Blue       = Color{ascii.Blue}
+	Magenta    = Color{ascii.Megenta}
+	Cyan       = Color{ascii.Cyan}
+	White      = Color{ascii.White}
+	ResetColor = Color{ascii.Reset}
 
 	// Text Styles
-	Bold          = TextStyle{acsii.Bold}
-	Dim           = TextStyle{acsii.Dim}
-	Italic        = TextStyle{acsii.Italic}
-	Underline     = TextStyle{acsii.Underline}
-	Inverse       = TextStyle{acsii.Inverse}
-	Hidden        = TextStyle{acsii.Hidden}
-	Strikethrough = TextStyle{acsii.Strikethough}
+	Bold          = TextStyle{ascii.Bold}
+	Dim           = TextStyle{ascii.Dim}
+	Italic        = TextStyle{ascii.Italic}
+	Underline     = TextStyle{ascii.Underline}
+	Inverse       = TextStyle{ascii.Inverse}
+	Hidden        = TextStyle{ascii.Hidden}
+	Strikethrough = TextStyle{ascii.Strikethough}
 
 	Reset = &style{
 		foreground: ResetColor,

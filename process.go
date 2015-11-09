@@ -3,7 +3,7 @@ package prompt
 import (
 	"time"
 
-	acsii "github.com/kildevaeld/go-acsii"
+	ascii "github.com/kildevaeld/go-ascii"
 	tm "github.com/kildevaeld/prompt/terminal"
 	"github.com/tj/go-spin"
 )
@@ -48,7 +48,7 @@ func (p *Process) Start() {
 func (p *Process) Run(fn func() error) error {
 	p.Start()
 	err := fn()
-	time.Sleep(300 * time.Millisecond)
+
 	if err != nil {
 		p.Done(p.Theme.Error.Color(p.ErrorMsg))
 	} else {
@@ -59,13 +59,13 @@ func (p *Process) Run(fn func() error) error {
 
 func (p *Process) update(msg string) {
 	p.Theme.Cursor.Backward(p.msgLen)
-	p.msgLen = p.Theme.Printf("%s%s %s", acsii.EraseLine, p.Msg, p.Theme.HighlightForeground.Color(msg))
+	p.msgLen = p.Theme.Printf("%s%s %s", ascii.EraseLine, p.Msg, p.Theme.HighlightForeground.Color(msg))
 }
 
 func (p *Process) Done(msg string) {
 	p.done <- true
 	p.Theme.Cursor.Show().Backward(p.msgLen)
-	p.Theme.Printf("%s%s %s\n", acsii.EraseLine, p.Msg, msg)
+	p.Theme.Printf("%s%s %s\n", ascii.EraseLine, p.Msg, msg)
 }
 
 func NewProcess(msg string, fn func() error) error {

@@ -4,7 +4,7 @@ import (
 	"os"
 	"syscall"
 
-	acsii "github.com/kildevaeld/go-acsii"
+	ascii "github.com/kildevaeld/go-ascii"
 	"golang.org/x/crypto/ssh/terminal"
 
 	"github.com/pkg/term"
@@ -98,15 +98,15 @@ func GetSize() (int, int, error) {
 }
 
 func Save() {
-	os.Stdout.Write([]byte(acsii.ESC + "?1049h\033[H"))
+	os.Stdout.Write([]byte(ascii.ESC + "?1049h\033[H"))
 }
 
 func Restore() {
-	os.Stdout.Write([]byte(acsii.ESC + "?1049l"))
+	os.Stdout.Write([]byte(ascii.ESC + "?1049l"))
 }
 
 func Clear() {
-	os.Stdout.Write([]byte(acsii.ESC + "2J"))
+	os.Stdout.Write([]byte(ascii.ESC + "2J"))
 }
 
 func HandleSignals(c int) {

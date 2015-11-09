@@ -1,7 +1,7 @@
 package prompt
 
 import (
-	acsii "github.com/kildevaeld/go-acsii"
+	ascii "github.com/kildevaeld/go-ascii"
 	tm "github.com/kildevaeld/prompt/terminal"
 )
 
@@ -15,12 +15,12 @@ type Progress struct {
 
 func (p *Progress) Done(msg string) {
 	p.Theme.Cursor.Show().Backward(p.msgLen)
-	p.Theme.Printf("%s%s %s\n", acsii.EraseLine, p.Msg, msg)
+	p.Theme.Printf("%s%s %s\n", ascii.EraseLine, p.Msg, msg)
 }
 
 func (p *Progress) Update(msg string) {
 	p.Theme.Cursor.Backward(p.msgLen)
-	p.msgLen = p.Theme.Printf("%s%s %s", acsii.EraseLine, p.Msg, p.Theme.HighlightForeground.Color(msg))
+	p.msgLen = p.Theme.Printf("%s%s %s", ascii.EraseLine, p.Msg, p.Theme.HighlightForeground.Color(msg))
 }
 
 func (p *Progress) Run(fn func(func(str string)) error) error {
