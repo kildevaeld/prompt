@@ -17,7 +17,7 @@ type Process struct {
 	SuccessMsg string
 }
 
-func (p *Process) Start() {
+func (p *Process) Start() *Process {
 	p.Theme.Cursor.Hide()
 
 	p.done = make(chan bool)
@@ -42,6 +42,7 @@ func (p *Process) Start() {
 		close(p.done)
 
 	}()
+	return p
 
 }
 
@@ -66,6 +67,14 @@ func (p *Process) Done(msg string) {
 	p.done <- true
 	p.Theme.Cursor.Show().Backward(p.msgLen)
 	p.Theme.Printf("%s%s %s\n", ascii.EraseLine, p.Msg, msg)
+}
+
+func (p *Process) Failure(msg string) {
+	p.Done(p.Theme.Error.Color(msg))
+}
+
+func (p *Process) Success(msg string) {
+	p.Done(p.Theme.Success.Color(msg))
 }
 
 func NewProcess(msg string, fn func() error) error {
