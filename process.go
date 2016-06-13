@@ -74,7 +74,9 @@ func (p *Process) Failure(msg string) {
 }
 
 func (p *Process) Success(msg string) {
-	p.Done(p.Theme.Success.Color(msg))
+
+	p.Done(p.Theme.Success.Color(p.SuccessMsg))
+
 }
 
 func NewProcess(msg string, fn func() error) error {
