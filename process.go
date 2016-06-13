@@ -68,6 +68,14 @@ func (p *Process) Done(msg string) {
 	p.Theme.Printf("%s%s %s\n", ascii.EraseLine, p.Msg, msg)
 }
 
+func (p *Process) Failure(msg string) {
+	p.Done(p.Theme.Error.Color(msg))
+}
+
+func (p *Process) Success(msg string) {
+	p.Done(p.Theme.Success.Color(p.SuccessMsg))
+}
+
 func NewProcess(msg string, fn func() error) error {
 
 	p := &Process{
