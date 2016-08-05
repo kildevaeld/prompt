@@ -91,8 +91,8 @@ func reflectField(fieldName string, target interface{}) (Field, error) {
 
 func formTagFromField(fieldName string, target interface{}) (string, error) {
 	fieldKind, err := reflections.GetFieldKind(target, fieldName)
-	f, _ := reflections.GetField(target, fieldName)
-	fmt.Printf("Field %v\n", f)
+	//f, _ := reflections.GetField(target, fieldName)
+	//fmt.Printf("Field %v\n", f)
 	if err != nil {
 		return "", err
 	}

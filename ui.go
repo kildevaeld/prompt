@@ -127,6 +127,10 @@ func (c *CliUI) Printf(msg string, args ...interface{}) {
 	c.Theme.Printf(msg, args...)
 }
 
+func (c *CliUI) Write(bs []byte) (int, error) {
+	return c.Theme.Write(bs)
+}
+
 func NewUI() *CliUI {
 
 	return &CliUI{
